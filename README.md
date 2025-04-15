@@ -21,6 +21,9 @@
 <div align="center">
 	
 # Kyodo – Python library for creating bots on the social network "[Hi Kyodo](https://hi.kyodo.app/)"
+
+Powered by <a href="https://kyodo-service.onrender.com/">kyodo-service</a> x-sig generator
+</a>
 </div>
 
 <div align="center">
