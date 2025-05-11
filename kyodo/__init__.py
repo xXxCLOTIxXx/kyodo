@@ -22,7 +22,7 @@ Note: This version of the library has been redesigned for public use to hide the
 """
 
 
-from .utils import log, logging, exceptions, check_gen_service
+from .utils import log, logging, exceptions
 from kyodo.utils.requester import Requester
 from .objects import *
 from .client import Client
@@ -60,7 +60,7 @@ __title__ = 'kyodo'
 __author__ = 'Xsarz & illusion1stj'
 __license__ = 'MIT'
 __copyright__ = f'Copyright 2025 {__author__}'
-__version__ = '0.8.57'
+__version__ = '0.8.6'
 
 
 from requests import get
@@ -68,7 +68,6 @@ try:__newest__ = get("https://pypi.org/pypi/kyodo/json").json().get("info", {}).
 except:__newest__=__version__
 if __version__ != __newest__:
 	log.warning(f'{__title__} made by {__author__}. Please update the library. Your version: {__version__}  A new version: {__newest__}')
-check_gen_service()
 
 
 """#TODO
@@ -80,4 +79,6 @@ Client.edit_persona
 Client.delete_persona
 Client.get_persona_info
 Client.create_persona
+
+Fix image loading (add x-sig generation for bytes data)
 """

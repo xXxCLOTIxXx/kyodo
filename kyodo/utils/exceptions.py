@@ -1,21 +1,4 @@
-from json import loads, JSONDecodeError
-
-
-
-
-
-class RemoteGeneratorError(Exception):
-	"""
-	Base class for all remote signature generator errors.
-	"""
-	def __init__(*args, **kwargs):
-		Exception.__init__(*args, **kwargs)
-
-
-class GeneratorServiceUnavailable(RemoteGeneratorError):
-	"""
-	Called when the remote signature generation server does not respond.
-	"""
+from orjson import loads, JSONDecodeError
 
 
 #++++++++++++++++++++++++++++++++++++++++++++++++++++=
@@ -102,12 +85,18 @@ class AccessRestricted(KyodoError):
 	"""
 
 
+class VersionOutOfDate(KyodoError):
+	"""
+	Called when an invalid request is sent. Often associated with incorrect data or updating security systems in the application.
+	"""
+
 
 errors = {
 	"0:404": NotFoundError,
 	"0:403": ForbiddenError,
 	"0:419": AccessRestricted,
 	"0:429": TooManyRequestsError,
+	"0:453": VersionOutOfDate
 }
 
 def checkException(data):
@@ -117,6 +106,6 @@ def checkException(data):
 		code = data.get("code")
 		_ = f"{apiCode}:{code}"
 	except JSONDecodeError:
-		raise UnknownError(data)
-	if _ in errors: raise errors[_](data)
-	else:raise UnknownError(data)
+		raise UnknownError(data=data)
+	if _ in errors: raise errors[_](data=data)
+	else:raise UnknownError(data=data)

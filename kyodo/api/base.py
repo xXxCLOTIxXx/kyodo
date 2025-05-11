@@ -37,4 +37,8 @@ class BaseClass(Socket):
 	def deviceId(self) -> str:
 		return self.req.deviceId
 
+	@property
+	def userId(self) -> str | None:
+		return self.me.userId
+
 	async def upload_media(self, file: IO | BufferedReader | AsyncBufferedReader, target: str = MediaTarget.ChatImageMessage) -> MediaValue: ...

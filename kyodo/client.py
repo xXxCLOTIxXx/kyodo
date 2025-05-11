@@ -90,7 +90,7 @@ class Client(
 	"""
 
 
-	def __init__(self, deviceId: str | None = None, language: str = 'en', user_agent: str = "Kyodo/127 CFNetwork/1496.0.7 Darwin/23.5.0", timezone: str = "Europe/Oslo", socket_enable: bool = True, error_trace: bool = False,
+	def __init__(self, deviceId: str | None = None, language: str = 'en', user_agent: str = "Kyodo/135 CFNetwork/1496.0.7 Darwin/23.5.0", timezone: str = "Europe/Oslo", socket_enable: bool = True, error_trace: bool = False,
 			sig_service_token: str | None = None):
 		self.socket_enable = socket_enable
 		self.error_trace = error_trace
@@ -101,7 +101,7 @@ class Client(
 				f"Not providing the same device-id can lead to issues. Please grab a valid one and always use it. Also please note that the generation of device-id is experimental and may not work. We generated you this device-id: {deviceId}"
 			)
 
-		self.req = Requester(user_agent, language, timezone, deviceId, sig_service_token)
+		self.req = Requester(self.__get_uid, user_agent, language, timezone, deviceId, sig_service_token)
 		Socket.__init__(self)
 
 
@@ -112,3 +112,7 @@ class Client(
 		return (f"kyodo.Client(deviceId={self.req.deviceId!r}, user_agent{self.user_agent!r}, language={self.req.language!r}, "
 				f"timezone={self.req.timezone!r}, socket_enable={self.socket_enable!r}, "
 				f"error_trace={self.error_trace!r}, token={self.token!r})")
+	
+
+	def __get_uid(self) -> str | None:
+		return self.userId

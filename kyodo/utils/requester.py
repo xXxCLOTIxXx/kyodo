@@ -1,11 +1,10 @@
 from .exceptions import checkException
 from . import log
-from .generators import generate_x_signature, random_ascii_string
+from .generators import _x_sig, _x_signature, random_ascii_string, strtime
 from .constants import api_url, app_id, app_version
 
 from aiohttp import ClientSession, ClientResponse
-from json import dumps
-from time import time as timestamp
+from orjson import dumps
 
 class Requester:
 	"""
@@ -44,17 +43,18 @@ class Requester:
 	This class is used internally by the `Client` to manage HTTP requests and communicate with Kyodo servers.
 	"""
 	
-	def __init__(self, user_agent: str, language: str, timezone: str, deviceId: str | None = None, sig_service_token: str | None = None):
+	def __init__(self, __uid, user_agent: str, language: str, timezone: str, deviceId: str | None = None, sig_service_token: str | None = None):
 		self.user_agent: str = user_agent
 		self.timezone: str = timezone
 		self.language: str = language
 		self.token: str = None
 		self.deviceId: str = deviceId or random_ascii_string(26)
 		self.sig_service_token: str = sig_service_token
+		self.__uid = __uid
 
 
-	def headers(self, headers: dict = None, content_type: str = "application/json") -> dict:
-		t = int(timestamp())
+	def headers(self, headers: dict = None, content_type: str = "application/json", data: dict | None = None) -> dict:
+		t = strtime()
 
 		default_headers = {
 			"user-agent": self.user_agent,
@@ -64,12 +64,20 @@ class Requester:
 			"device-language": self.language,
 			"device-timezone": self.timezone,
 			"Accept-Language": self.language,
-			"start-time": str(t),
+			"start-time": t,
 			"device-id": self.deviceId,
-			"x-signature": generate_x_signature(t, self.sig_service_token)
+			"x-signature":_x_signature( self.deviceId, int(t)),
 		}
 		if content_type: default_headers["content-type"] = content_type
-		if self.token: default_headers["Authorization"] = self.token
+		if self.token:
+			default_headers["Authorization"] = self.token
+			uid =  self.__uid()
+			if not uid:
+				log.warning("No UID found! 'X-Sig' header will be missing.")
+			else:
+				default_headers["x-sig"] = _x_sig(
+					self.deviceId, uid, t, data or {}
+				)
 
 		if headers: default_headers.update(headers)
 		return default_headers
@@ -77,6 +85,9 @@ class Requester:
 
 	async def make_async_request(self, method: str, endpoint: str = None, body: dict | bytes = None, allowed_code: int = 200, headers: dict = None , api: str = None) -> ClientResponse:
 		async with ClientSession() as asyncSession:
-			response = await asyncSession.request(method, f"{api or api_url}{endpoint or ''}", data=dumps(body) if isinstance(body, dict) else body if body is not None else None, headers=self.headers(headers))
+			data = dumps(body) if isinstance(body, dict) else body if body is not None else None
+			headers = self.headers(headers, data=body)
+			
+			response = await asyncSession.request(method, f"{api or api_url}{endpoint or ''}", data=data, headers=headers)
 			log.debug(f"[https][{method}][{endpoint or ''}][{response.status}]: {len(body) if isinstance(body, bytes) else body}")
 			return checkException(await response.text()) if response.status != allowed_code else response

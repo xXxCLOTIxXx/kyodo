@@ -21,9 +21,10 @@ class AuthModule(BaseClass):
 
 		return self.me
 
-	async def login_token(self, token: str, refresh: bool = False) -> bool:
+	async def login_token(self, token: str, userId: str, refresh: bool = False) -> bool:
 		if self.token: return True
 		self.req.token = token
+		self.me.userId = userId
 		if refresh: await self.refresh_token()
 		if self.socket_enable:await self.ws_connect()
 		return True

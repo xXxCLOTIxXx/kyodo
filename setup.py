@@ -4,7 +4,7 @@ with open("README.md", "r") as file:
 	long_description = file.read()
 
 link = 'https://github.com/xXxCLOTIxXx/kyodo/archive/refs/heads/main.zip'
-ver = '0.8.26'
+ver = '0.8.6'
 
 setup(
 	name = "kyodo",
@@ -35,7 +35,8 @@ setup(
 		"colorama",
 		"aiohttp",
 		"pyjwt",
-		"aiofiles"
+		"aiofiles",
+		"orjson"
 	],
 	packages = find_packages()
 )

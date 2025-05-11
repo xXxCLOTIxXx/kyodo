@@ -2,29 +2,9 @@ from jwt import encode
 from random import choices
 from string import digits, ascii_letters
 from datetime import datetime, timezone, timedelta
-from json import JSONDecodeError
-
-from .constants import SIG_GEN_API, SIG_GEN_TOKEN
-from .exceptions import RemoteGeneratorError, GeneratorServiceUnavailable
-from . import log
-
-from requests import get
-
-def generate_x_signature(time: int, token: str | None = None) -> str:
-    result = get(f"{SIG_GEN_API}/x-sig/generate?token={token or SIG_GEN_TOKEN}&time={str(time)}")
-    log.debug(f"[SIG-GEN][{SIG_GEN_API}/x-sig/generate?token={token or SIG_GEN_TOKEN}&time={str(time)}]: {result.status_code}")
-    if result.status_code == 200:
-        data: dict = result.json()
-        return data["sig"]
-    try:
-        data: dict = result.json()
-        raise RemoteGeneratorError(data["error"])
-    except JSONDecodeError:
-        raise GeneratorServiceUnavailable(f"Service not found or unavailable")
-
-
-
-
+from time import time
+from orjson import dumps
+from hashlib import sha256
 
 def random_ascii_string(length=11) -> str:
     """
@@ -75,3 +55,28 @@ def date_string_to_timestamp_ms(date: str) -> int:
     """
     dt = datetime.strptime(date, "%d.%m.%Y")
     return int(dt.timestamp() * 1000)
+
+
+def strtime() -> str:
+    return str(int(time() * 1000))
+
+
+
+def _x_signature(secret: str, _time: int) -> str:
+    return encode(
+        {"typeof": "xSig", "exp": _time}, secret, algorithm="HS256"
+    )
+
+
+def _x_sig(device_id: str, uid: str, reqtime: str, json: dict | bytes) -> str:
+    #TODO: add media data
+    return sha256(
+        dumps(
+            {
+                "startTime": reqtime,
+                "uid": uid,
+                "deviceId": device_id,
+                "data": dumps(json).decode("utf-8") if isinstance(json, dict) else None,
+            }
+        )
+    ).hexdigest()
