@@ -18,6 +18,35 @@
 </div>
 <br>
 
+# 🧭 Documentation Navigation
+
+Welcome to the documentation! Use the following sections to navigate:
+
+## 📌 Sections
+
+### 0. [Jump to install guide](#-how-to-install-a-library)
+
+### 1. [Client & Functions](client_and_functions.md)
+Overview of the client class and its main functions.
+
+### 2. [Event Handling & Command Creation](event_handling_and_commands.md)
+Learn how to create and register commands, and handle events.
+
+### 3. [Exception Handling](exception_handling.md)
+How to catch and handle exceptions properly.
+
+### 4. [Objects](objects.md)
+Documentation of core objects used throughout the library.
+
+### 5. [Logging Configuration](logging.md)
+Set up and customize logging to monitor and debug behavior.
+
+### 6. [Examples](examples)
+A set of ready-to-use examples to help you get started quickly.
+
+---
+
+
 
 # 📦 How to Install a Library
 
@@ -63,3 +92,8 @@ pip install -e .
 ```
 
 ---
+
+<h1 align="center">
+  
+  [Examples](examples)
+</h1>
