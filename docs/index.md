@@ -17,3 +17,49 @@
   </a>
 </div>
 <br>
+
+
+# 📦 How to Install a Library
+
+This guide shows how to install a Python library using different methods.
+
+## ✅ 1. Install from [PyPI](https://pypi.org) using `pip`
+
+```bash
+pip install kyodo
+```
+
+---
+
+## 🔗 2. Install directly from a Git repository
+
+You can install the latest version of a library directly from a Git repository:
+
+```bash
+pip install git+https://github.com/xXxCLOTIxXx/kyodo.git
+```
+
+---
+
+## 🛠️ 3. Install from a cloned repository
+
+1. Clone the repository:
+
+```bash
+git clone https://github.com/xXxCLOTIxXx/kyodo.git
+cd repository
+```
+
+2. Install the package locally:
+
+```bash
+pip install .
+```
+
+Or, for development purposes:
+
+```bash
+pip install -e .
+```
+
+---
