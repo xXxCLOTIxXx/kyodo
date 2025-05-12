@@ -144,8 +144,6 @@ class PostsModule(BaseClass):
 
 	@require_auth
 	async def create_post(self, circleId: str, title: str, content: str, media_files: list[IO | BufferedReader | AsyncBufferedReader] | None = None, cover_image: IO | BufferedReader | AsyncBufferedReader | None = None) -> PostInfo:
-		#TODO
-		# {"title":"Test post","content":"Hueta\nHdhdhdhdhdhdhjd\nSmskdknsmdkd\nJdjdjdjdjdjdjd\nNdjdjdjdjdjd\nDhdjdjdjdj\nI’m","config":{"mediaMap":{"f9fde90":{"type":0,"src":"https://cu.kyodo.app/post/media/cm8oja6i200w06uux08xvc1y8.png","isCover":false}}}}
 		media_list = list()
 		data = {
 			"title": title,

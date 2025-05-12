@@ -39,12 +39,6 @@ class Client(
 		error_trace (bool): 
 			Enables detailed error logs and tracebacks if True.
 			Useful for debugging, but may expose sensitive data.
-		
-		sig_service_token (str):
-			Default is None (public key will be used)
-			Token for remote signature generation service
-			If the public key is not active, please contact us and we may issue you a personal one
-			https://xxxclotixxx.github.io/xXxCLOTIxXx/
 
 	Modules:
 		This class includes methods from the following modules:
@@ -90,8 +84,7 @@ class Client(
 	"""
 
 
-	def __init__(self, deviceId: str | None = None, language: str = 'en', user_agent: str = "Kyodo/135 CFNetwork/1496.0.7 Darwin/23.5.0", timezone: str = "Europe/Oslo", socket_enable: bool = True, error_trace: bool = False,
-			sig_service_token: str | None = None):
+	def __init__(self, deviceId: str | None = None, language: str = 'en', user_agent: str = "Kyodo/135 CFNetwork/1496.0.7 Darwin/23.5.0", timezone: str = "Europe/Oslo", socket_enable: bool = True, error_trace: bool = False):
 		self.socket_enable = socket_enable
 		self.error_trace = error_trace
 
@@ -101,7 +94,7 @@ class Client(
 				f"Not providing the same device-id can lead to issues. Please grab a valid one and always use it. Also please note that the generation of device-id is experimental and may not work. We generated you this device-id: {deviceId}"
 			)
 
-		self.req = Requester(self.__get_uid, user_agent, language, timezone, deviceId, sig_service_token)
+		self.req = Requester(self.__get_uid, user_agent, language, timezone, deviceId)
 		Socket.__init__(self)
 
 

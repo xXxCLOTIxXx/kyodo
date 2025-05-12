@@ -43,13 +43,12 @@ class Requester:
 	This class is used internally by the `Client` to manage HTTP requests and communicate with Kyodo servers.
 	"""
 	
-	def __init__(self, __uid, user_agent: str, language: str, timezone: str, deviceId: str | None = None, sig_service_token: str | None = None):
+	def __init__(self, __uid, user_agent: str, language: str, timezone: str, deviceId: str | None = None):
 		self.user_agent: str = user_agent
 		self.timezone: str = timezone
 		self.language: str = language
 		self.token: str = None
 		self.deviceId: str = deviceId or random_ascii_string(26)
-		self.sig_service_token: str = sig_service_token
 		self.__uid = __uid
 
 

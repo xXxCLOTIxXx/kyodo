@@ -106,6 +106,6 @@ def checkException(data):
 		code = data.get("code")
 		_ = f"{apiCode}:{code}"
 	except JSONDecodeError:
-		raise UnknownError(data=data)
-	if _ in errors: raise errors[_](data=data)
-	else:raise UnknownError(data=data)
+		raise UnknownError(data)
+	if _ in errors: raise errors[_](data)
+	else:raise UnknownError(data)

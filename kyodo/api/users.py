@@ -1,7 +1,7 @@
 from .base import BaseClass
 from ..objects import (
 	BaseProfile, MediaTarget, UsersList, CircleRole,
-	UserActivity, PersonaInChat, UserPersona
+	UserActivity, PersonaInChat, UserPersona, UserPersonasList, MuteDuration
 )
 from ..utils import require_auth, exceptions, require_uid
 
@@ -9,6 +9,8 @@ from typing import IO
 from _io import BufferedReader
 from aiofiles.threadpool.binary import AsyncBufferedReader
 
+from datetime import UTC
+from datetime import datetime as bake
 
 
 
@@ -66,7 +68,7 @@ class UsersModule(BaseClass):
 	
 
 	@require_auth
-	async def follow_unfollow_user(self, circleId: str, userId: str) -> bool:
+	async def switch_following_status(self, circleId: str, userId: str) -> bool:
 		result = await self.req.make_async_request("POST", f"/{circleId}/s/users/{userId}/follow/status")
 		data: dict = await result.json()
 		return bool(data.get("followStatus", 0))
@@ -84,7 +86,7 @@ class UsersModule(BaseClass):
 
 
 	@require_auth
-	async def block_unblock_user(self, userId: str) -> bool:
+	async def switch_block_user_status(self, userId: str) -> bool:
 		result = await self.req.make_async_request("POST", f"/g/s/accounts/blocking/{userId}")
 		data: dict = await result.json()
 		return data.get("isBlocked")
@@ -164,11 +166,12 @@ class UsersModule(BaseClass):
 
 
 	@require_auth
-	async def mute_user(self, circleId: str, userId: str, reason: str = "") -> bool:
+	async def mute_user(self, circleId: str, userId: str, reason: str = "", exp_time: MuteDuration = MuteDuration.ONE_HOUR) -> bool:
+		actual_time = bake.now(UTC) + exp_time.value
 		await self.req.make_async_request("POST", f"/{circleId}/s/notices", {
 			"uid": userId,
 			"content": reason,
-			"muteExpTime": "2025-04-13T12:00:13.455Z"
+			"muteExpTime": actual_time.strftime("%Y-%m-%dT%H:%M:%S.%f")[:-3] + "Z"
 		})
 		return True
 
@@ -188,17 +191,8 @@ class UsersModule(BaseClass):
 		})
 		return True
 
-
 	@require_auth
-	async def warn_user(self, circleId: str, userId: str, reason: str = "") -> bool:
-		await self.req.make_async_request("POST", f"/{circleId}/s/notices", {
-			"uid": userId,
-			"content": reason,
-		})
-		return True
-
-	@require_auth
-	async def ban_unban_user(self, circleId: str, userId: str, reason: str = "") -> int:
+	async def switch_ban_status(self, circleId: str, userId: str, reason: str = "") -> int:
 		result = await self.req.make_async_request("POST", f"/{circleId}/s/users/{userId}/status", {
 			"note": reason
 		})
@@ -209,14 +203,14 @@ class UsersModule(BaseClass):
 	#personas--------------------------
 
 	@require_auth
-	async def get_disabled_personas(self, circleId: str, start: int = 0, limit: int = 50) -> dict:
+	async def get_disabled_personas(self, circleId: str, start: int = 0, limit: int = 50) -> UserPersonasList:
 		result = await self.req.make_async_request("GET", f"/{circleId}/s/personas?type=1&limit={limit}&start={start}&status=0")
-		return await result.json()
+		return UserPersonasList(await result.json())
 
 	@require_auth
-	async def get_user_personas(self, circleId: str, userId: str, start: int = 0, limit: int = 50) -> dict:
+	async def get_user_personas(self, circleId: str, userId: str, start: int = 0, limit: int = 50) -> UserPersonasList:
 		result = await self.req.make_async_request("GET", f"/{circleId}/s/personas?type=0&limit={limit}&start={start}&status=0&parentId={userId}")
-		return await result.json()
+		return UserPersonasList(await result.json())
 	
 	@require_auth
 	async def create_persona(self, circleId: str, nickname: str, avatar: IO | BufferedReader | AsyncBufferedReader, bio: str | None = None) -> UserPersona:

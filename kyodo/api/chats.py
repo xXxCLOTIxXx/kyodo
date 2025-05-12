@@ -1,7 +1,7 @@
 from .base import BaseClass
 from ..objects import (
 	MediaTarget, ChatData, ChatMessage, ChatMessageTypes, ChatList, PersonaInChat,
-	MessagesList
+	MessagesList, ChatType
 )
 from ..utils import require_auth, exceptions
 from ..utils.generators import random_ascii_string
@@ -9,8 +9,6 @@ from ..utils.generators import random_ascii_string
 from typing import IO
 from _io import BufferedReader
 from aiofiles.threadpool.binary import AsyncBufferedReader
-
-
 
 
 class ChatsModule(BaseClass):
@@ -78,7 +76,7 @@ class ChatsModule(BaseClass):
 
 		result = await self.req.make_async_request("POST", f"/{circleId}/s/chats", {
 			"name": name,
-			"type": 2,
+			"type": ChatType.PUBLIC,
 			"icon": icon_data.url,
 			"invitedIds": invitedIds
 		})
@@ -88,7 +86,7 @@ class ChatsModule(BaseClass):
 	@require_auth
 	async def create_group_chat(self, circleId: str, invitedIds: list[str]) -> ChatData:
 		result = await self.req.make_async_request("POST", f"/{circleId}/s/chats", {
-			"type": 1,
+			"type": ChatType.GROUP,
 			"invitedIds": invitedIds
 		})
 
@@ -97,7 +95,7 @@ class ChatsModule(BaseClass):
 	@require_auth
 	async def start_direct_chat(self, circleId: str, userId: str) -> ChatData:
 		result = await self.req.make_async_request("POST", f"/{circleId}/s/chats", {
-			"type": 0,
+			"type": ChatType.PRIVATE,
 			"invitedIds": [userId]
 		})
 
@@ -215,6 +213,7 @@ class ChatsModule(BaseClass):
 		
 		if "config" not in entity:
 			entity["config"] = {"refId": random_ascii_string(), "type": type}
+			if stickerId:entity["config"]["stickerId"] = stickerId
 		if replyMessageId:
 			entity["config"]["replyMessageId"] = replyMessageId
 		

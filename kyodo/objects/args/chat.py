@@ -6,3 +6,8 @@ class ChatMessageTypes:
     Video: int = 3
     Sticker: int = 16
 
+
+class ChatType:
+    PRIVATE = 0
+    GROUP = 1
+    PUBLIC = 2

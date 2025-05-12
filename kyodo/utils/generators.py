@@ -6,6 +6,8 @@ from time import time
 from orjson import dumps
 from hashlib import sha256
 
+from base64 import b64encode
+
 def random_ascii_string(length=11) -> str:
     """
     Generates a random ASCII string.
@@ -61,22 +63,23 @@ def strtime() -> str:
     return str(int(time() * 1000))
 
 
-
 def _x_signature(secret: str, _time: int) -> str:
     return encode(
         {"typeof": "xSig", "exp": _time}, secret, algorithm="HS256"
     )
 
 
-def _x_sig(device_id: str, uid: str, reqtime: str, json: dict | bytes) -> str:
-    #TODO: add media data
+def _x_sig(device_id: str, uid: str, reqtime: str, body: dict | bytes) -> str:
+    if isinstance(body, dict):data = dumps(body).decode("utf-8")
+    elif isinstance(body, bytes):data ="{}" # idk/ TODO
+    else:data = "{}"
     return sha256(
         dumps(
             {
                 "startTime": reqtime,
                 "uid": uid,
                 "deviceId": device_id,
-                "data": dumps(json).decode("utf-8") if isinstance(json, dict) else None,
+                "data": data,
             }
         )
     ).hexdigest()

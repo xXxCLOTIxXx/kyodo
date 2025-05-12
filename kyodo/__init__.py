@@ -60,7 +60,7 @@ __title__ = 'kyodo'
 __author__ = 'Xsarz & illusion1stj'
 __license__ = 'MIT'
 __copyright__ = f'Copyright 2025 {__author__}'
-__version__ = '0.8.6'
+__version__ = '0.8.68'
 
 
 from requests import get
@@ -69,16 +69,8 @@ except:__newest__=__version__
 if __version__ != __newest__:
 	log.warning(f'{__title__} made by {__author__}. Please update the library. Your version: {__version__}  A new version: {__newest__}')
 
-
-"""#TODO
-Client.create_post
-Client.highlight_post
-Client.get_disabled_personas
-Client.get_user_personas
-Client.edit_persona
-Client.delete_persona
-Client.get_persona_info
-Client.create_persona
-
-Fix image loading (add x-sig generation for bytes data)
+"""
+#TODO
+Client.highlight_post #not yet implemented in kyodo app
+Client.upload_media #Fix image loading (add x-sig generation for media file data)
 """

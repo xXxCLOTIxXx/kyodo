@@ -83,8 +83,23 @@ class AccountConfig:
 		self.handleUpdateAvailableTime: int | None = data.get("handleUpdateAvailableTime")
 
 
-
-
 class UserPersona:
 	def __init__(self, data: dict):
 		self.data: dict = data
+		self.avatar: str = data.get("avatar")
+		self.userId: str = data.get("uid")
+		self.status: int = data.get("status")
+		self.personaId: str = data.get("id")
+		self.nickname: str = data.get("nickname")
+		self.content: str = data.get("content")
+		self.updatedTime: str = data.get("updatedTime")
+		self.createdTime: str = data.get("createdTime")
+		self.circleId: str = data.get("circleId")
+		self.theme: dict = data.get("theme", {})
+		self.user: BaseProfile = BaseProfile(data.get("user", {}))
+
+class UserPersonasList:
+	def __init__(self, data: dict):
+		self.data: dict = data
+		self.persona: list[UserPersona] = [UserPersona(persona) for persona in data.get("list" , [])]
+		self.hasMore: bool = data.get("hasMore")

@@ -1,6 +1,6 @@
 from .args import *
 
-from .user import BaseProfile, UsersList, HandleInfo, AccountConfig, UserActivity, UserPersona
+from .user import BaseProfile, UsersList, HandleInfo, AccountConfig, UserActivity, UserPersona, UserPersonasList
 from .chat_message import ChatMessage, MessagesList
 from .BaseEvent import BaseEvent
 from .circle import CircleInfo, Circle, CirclesList, CircleStats, CircleDiscoveryRequirements

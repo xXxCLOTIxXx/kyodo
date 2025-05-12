@@ -1,10 +1,10 @@
 from setuptools import setup, find_packages
 
-with open("README.md", "r") as file:
+with open("README.md", "r", encoding="utf-8") as file:
 	long_description = file.read()
 
 link = 'https://github.com/xXxCLOTIxXx/kyodo/archive/refs/heads/main.zip'
-ver = '0.8.6'
+ver = '0.8.68'
 
 setup(
 	name = "kyodo",

@@ -11,7 +11,7 @@ from .socket_handler import Handler
 class Socket(Handler):
 
 	"""
-	Module for working with kudo socket in real time. Not used separately from the client.
+	Module for working with kyodo socket in real time. Not used separately from the client.
 	"""
 
 	token: str
